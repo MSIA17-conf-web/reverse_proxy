@@ -1,0 +1,27 @@
+tls:
+  certificates:
+  - certFile: /etc/letsencrypt/live/www.msia17conferences.com/cert.pem
+    keyFile: /etc/letsencrypt/live/www.msia17conferences.com/privkey.pem
+
+http:
+  routers:
+    api:
+      rule: Path(`/api`)
+      serivce: api@internal
+      middlewares:
+        - user-auth
+    portainer:
+      rule: Path(`/portainer`)
+      service: portainer
+      tls: {}
+
+  middlewares:
+    user-auth:
+      basicAuth:
+        usersFile: "/etc/traefik/users"
+
+  services:
+    portainer:
+      loadBalancer:
+        servers:
+          - url: "https://127.0.0.1:9000"

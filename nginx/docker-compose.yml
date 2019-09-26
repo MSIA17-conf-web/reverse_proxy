@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  nginx: 
+    image: nginx:latest
+    container_name: nginx
+    hostname: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - cert-handler_certbot-letsencrypt:/etc/letsencrypt
+    ports:
+      - 80:80
+      - 443:443
+
+volumes:
+  cert-handler_certbot-letsencrypt:
+    external: true
+
+networks: 
+  default:
+    external:
+      name: the_network

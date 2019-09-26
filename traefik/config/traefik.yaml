@@ -1,0 +1,15 @@
+# Traefik Static Configuration File
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic_config
+    watch: true
+
+api:
+  dashboard: true
+
+entryPoints:
+  web:
+    address: ":80"
+  web-secure:
+    address: ":443"

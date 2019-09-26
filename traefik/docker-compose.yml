@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  traefik:
+    image: traefik:v2.0
+    container_name: traefik
+    hostname: traefik
+    restart: always
+    # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"
+      - "443:443"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      - ./config:/etc/traefik/
+      - cert-handler_certbot-letsencrypt:/etc/letsencrypt
+    network_mode: bridge
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    hostname: portainer
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+      - cert-handler_certbot-letsencrypt:/etc/letsencrypt
+    command:
+      --ssl
+      --sslcert /etc/letsencrypt/live/www.msia17conferences.com/cert.pem
+      --sslkey /etc/letsencrypt/live/www.msia17conferences.com/privkey.pem          
+    network_mode: bridge
+
+volumes:
+  portainer_data:
+    name: portainer_data
+  cert-handler_certbot-letsencrypt:
+    external: true
